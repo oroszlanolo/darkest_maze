@@ -1,7 +1,10 @@
-//TODO: shop, upgrades
+
+//TODO: Statistic
+//TODO: Achivement
 //TODO: collections
 //TODO: pickable fuel
-//TODO: power ups inside the rooms
+//TODO: power ups
+//TODO: Tips
 //TODO: some kind of ending to the maze (maybe some reward)
 //TODO: adjust numbers(energy usage, coin gain, coin number, speed, upgrade costs)
 
@@ -36,6 +39,7 @@ let coins = [];
 
 let mazeImg;
 let cirkImg;
+let cirks = [];
 
 let frcnt;
 
@@ -50,6 +54,7 @@ let gameSt = {
 
 function preload(){
 	loadJSON("upgrades.json",CBLoadUpgrades);
+	loadJSON("items.json",CBLoadItems);
 }
 
 function setup() {
@@ -64,7 +69,8 @@ function setup() {
 	myPlayer = new Player(wallW + playerW/2, wallW + playerW/2);
 	loadCookies();
 	createGUI();
-	createCircle();
+	createCirk(myPlayer.lightRange);
+	loadStats();
 	frcnt = 0;
 	// setInterval(frCount,1000);
 	createWalls();
@@ -97,20 +103,29 @@ function updateMazePic(){
 	drawWalls();
 	drawCoins();
 }
-function createCircle(){
-	cirkImg = createGraphics(myPlayer.lightRange*2,myPlayer.lightRange*2);
-	cirkImg.loadPixels();
-	for(var i = -myPlayer.lightRange; i <= myPlayer.lightRange; i++){
-		for(var j = -myPlayer.lightRange; j <= myPlayer.lightRange; j++){
-			let brightness = map(sqrt(i*i + j*j), 0, myPlayer.lightRange, 0, 255);
-			let ind = (cirkImg.width * (i + cirkImg.height / 2) + j + cirkImg.width/2) * 4;
-			cirkImg.pixels[ind] = 0;
-			cirkImg.pixels[ind + 1] = 0;
-			cirkImg.pixels[ind + 2] = 0;
-			cirkImg.pixels[ind + 3] = brightness;
+function createCirk(n){
+	var cirktmp = createGraphics(n * 2, n * 2);
+		cirktmp.loadPixels();
+		for(var i = -n; i <= n; i++){
+			for(var j = -n; j <= n; j++){
+				let brightness = map(sqrt(i*i + j*j), 0, n, 0, 255);
+				let ind = (cirktmp.width * (i + cirktmp.height / 2) + j + cirktmp.width/2) * 4;
+				cirktmp.pixels[ind] = 0;
+				cirktmp.pixels[ind + 1] = 0;
+				cirktmp.pixels[ind + 2] = 0;
+				cirktmp.pixels[ind + 3] = brightness;
+			}
+		}
+		cirktmp.updatePixels();
+		cirks[n] = cirktmp;
+}
+
+function drawTools(GUIArray){
+	for(var i = 0; i < GUIArray.length; i++){
+		if(GUIArray[i].crash(mouseX,mouseY)){
+			GUIArray[i].drawTooltip(mouseX,mouseY);
 		}
 	}
-	cirkImg.updatePixels();
 }
 
 function draw() {
@@ -120,11 +135,23 @@ function draw() {
 			background(255);
 			break;
 		case gameSt.Shop:
+		background(255);
+			for(var st of shopGUI){
+				st.draw();
+			}
+			drawTools(shopGUI);
 			break;
 		case gameSt.Upgrade:
 			background(255);
 			for(var ut of upgradeGUI){
 				ut.draw();
+			}
+			drawTools(upgradeGUI);
+			break;
+		case gameSt.Settings:
+		background(255);
+			for(var st of settingsText){
+				st.draw();
 			}
 			break;
 		case gameSt.KeyBind:
@@ -140,7 +167,7 @@ function draw() {
 			drawLight(myPlayer.x,myPlayer.y,myPlayer.lightRange);
 			myPlayer.move();
 			reachCoin();
-			myPlayer.draw();
+			myPlayer.draw(parseInt(graphSelect.value()));
 			break;
 	}
 	drawGUI();
@@ -166,9 +193,12 @@ function removeCoin(c){
 
 function drawLight(x,y,lightRange){
 	image(mazeImg,0,0);
-	var xPos = myPlayer.x-cirkImg.width/2;
-	var yPos = myPlayer.y-cirkImg.height/2;
-	image(cirkImg,xPos,yPos);
+	if(cirks[lightRange] == null){
+		createCirk(lightRange);
+	}
+	var xPos = myPlayer.x-cirks[lightRange].width/2;
+	var yPos = myPlayer.y-cirks[lightRange].height/2;
+	image(cirks[lightRange],xPos,yPos);
 	fill(0);
 	stroke(0);
 	if(xPos > 0){
@@ -177,11 +207,11 @@ function drawLight(x,y,lightRange){
 	if(yPos > 0){
 		rect(0,0,mazeW,ceil(yPos));
 	}
-	if(xPos+cirkImg.width < mazeW){
-		rect(xPos+floor(cirkImg.width),0,mazeW,mazeH);
+	if(xPos+cirks[lightRange].width < mazeW){
+		rect(xPos+floor(cirks[lightRange].width),0,mazeW,mazeH);
 	}
-	if(yPos+cirkImg.height < mazeH){
-		rect(0,yPos+floor(cirkImg.height),mazeW,mazeH);
+	if(yPos+cirks[lightRange].height < mazeH){
+		rect(0,yPos+floor(cirks[lightRange].height),mazeW,mazeH);
 	}
 }
 
@@ -212,16 +242,20 @@ function keyPressed(){
 	}
 	switch(keyCode){
 		case keyPreference.UP.key:
-			myPlayer.yDir ++;
+			myPlayer.setDir(0,1);
+			// myPlayer.yDir ++;
 			break;
 		case keyPreference.RIGHT.key:
-			myPlayer.xDir ++;
+			myPlayer.setDir(1,0);
+			// myPlayer.xDir ++;
 			break;
 		case keyPreference.DOWN.key:
-			myPlayer.yDir --;
+			myPlayer.setDir(0,-1);
+			// myPlayer.yDir --;
 			break;
 		case keyPreference.LEFT.key:
-			myPlayer.xDir --;
+			myPlayer.setDir(-1,0);
+			// myPlayer.xDir --;
 			break;
 		case keyPreference.LUP.key:
 			myPlayer.lightAdjust++;
@@ -232,21 +266,28 @@ function keyPressed(){
 		case keyPreference.WALK.key:
 			myPlayer.walking = true;
 			break;
+		case keyPreference.BREAK.key:
+			myPlayer.breakWall();
+			break;
 	}
 }
 function keyReleased(){
 	switch(keyCode){
 		case keyPreference.UP.key:
-			myPlayer.yDir --;
+			myPlayer.setDir(0,-1);
+			// myPlayer.yDir --;
 			break;
 		case keyPreference.RIGHT.key:
-			myPlayer.xDir --;
+		myPlayer.setDir(-1,0);
+			// myPlayer.xDir --;
 			break;
 		case keyPreference.DOWN.key:
-			myPlayer.yDir ++;
+		myPlayer.setDir(0,1);
+			// myPlayer.yDir ++;
 			break;
 		case keyPreference.LEFT.key:
-			myPlayer.xDir ++;
+		myPlayer.setDir(1,0);
+			// myPlayer.xDir ++;
 			break;
 		case keyPreference.LUP.key:
 			myPlayer.lightAdjust--;
@@ -257,6 +298,39 @@ function keyReleased(){
 		case keyPreference.WALK.key:
 			myPlayer.walking = false;
 			break;
+	}
+}
+function keyTyped(){
+	if(gameState == gameSt.Dungeon){
+		switch(keyCode){
+			case keyPreference.ZERO.key:
+			myPlayer.useItem(0);
+			break;
+			case keyPreference.ONE.key:
+			myPlayer.useItem(1);
+			break;
+			case keyPreference.TWO.key:
+			myPlayer.useItem(2);
+			break;
+			case keyPreference.TREE.key:
+			myPlayer.useItem(3);
+			break;
+			case keyPreference.FOUR.key:
+			myPlayer.useItem(4);
+			break;
+			case keyPreference.FIVE.key:
+			myPlayer.useItem(5);
+			break;
+			case keyPreference.SIX.key:
+			myPlayer.useItem(6);
+			break;
+			case keyPreference.SEVEN.key:
+			myPlayer.useItem(7);
+			break;
+			case keyPreference.EIGHT.key:
+			myPlayer.useItem(8);
+			break;
+		}
 	}
 }
 

@@ -1,4 +1,3 @@
-
 var cols = [10,70,500,650];
 let mMenuButts = [];
 let newDungeonButt;
@@ -13,6 +12,7 @@ function createGUI(){
     createButts();
     createSettings();
     createKeyBindGUI();
+    createShop();
     changeGState(gameSt.MMenu);
     setPositions();
 }
@@ -48,6 +48,38 @@ function writePlayerInfo(){
     noStroke();
     text("Coins:", cols[0], 50);
     text(myPlayer.coins, cols[1],50);
+
+    //items
+    for(var i = 0; i < 9; i++){
+        textAlign(CENTER);
+        fill(0,0,255,100);
+        // fill(0,255,0,150);
+        stroke(0,0,255);
+        rect(5 + i * 70,55,60,50);
+        //so ugly
+        if(i == 3 && myPlayer.buffs.coinMult.active){
+            fill(0,255,0,150);
+            noStroke();
+            var wid = max(0,map(millis(),myPlayer.buffs.coinMult.start,myPlayer.buffs.coinMult.time,60,0));
+            rect(5 + i * 70,55,wid,50);
+        }
+        if(i == 4 && myPlayer.buffs.lightRange.active){
+            fill(0,255,0,150);
+            noStroke();
+            var wid = max(0,map(millis(),myPlayer.buffs.lightRange.start,myPlayer.buffs.lightRange.time,60,0));
+            rect(5 + i * 70,55,wid,50);
+        }
+        noStroke();
+        fill(0,0,255);
+        textSize(18);
+        text(getCharFromCode(preferenceArray[i].key),35+i*70,75);
+        fill(0);
+        textSize(14);
+        if(i < myPlayer.items.length){
+            var curr = myPlayer.items[i];
+            text(curr.short + " " + curr.quant, 35 + i*70, 95);
+        }
+    }
 }
 
 function createButts(){
@@ -114,6 +146,7 @@ function setPositions(){
     setUpgradePositions();
     setSettingsPositions();
     setKeyBindPos();
+    setShopPos();
 }
 
 
@@ -151,31 +184,37 @@ function changeGState(gst){
         hideButts(upgradeButts);
         hideButts(settingsGUI);
         hideButts(keyBindButts);
+        hideButts(shopButts);
         break;
         case gameSt.Shop:
         hideButts(mMenuButts);
         hideButts(upgradeButts);
         hideButts(settingsGUI);
+        showButts(shopButts);
         break;
         case gameSt.Upgrade:
         hideButts(mMenuButts);
         showButts(upgradeButts);
         hideButts(settingsGUI);
+        hideButts(shopButts);
         break;
         case gameSt.Dungeon:
         hideButts(mMenuButts);
         hideButts(upgradeButts);
         hideButts(settingsGUI);
+        hideButts(shopButts);
         break;
         case gameSt.Settings:
         hideButts(mMenuButts);
         hideButts(upgradeButts);
         hideButts(keyBindButts);
         showButts(settingsGUI);
+        hideButts(shopButts);
         break;
         case gameSt.KeyBind:
         hideButts(settingsGUI);
         showButts(keyBindButts);
+        hideButts(shopButts);
     }
     gameState = gst;
 }
@@ -192,13 +231,25 @@ function showButts(buttArr){
 }
 
 function CBSave(){
+    //upgrades
     for(var i = 0; i < upgradeDat.length; i++){
         document.cookie = i + "=" + upgradeDat[i].current + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
     }
+    //coins
     document.cookie = "coin=" + myPlayer.coins + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
     
+    //keyBinds
     for(var i = 0; i < preferenceArray.length; i++){
         document.cookie = preferenceArray[i].name + "=" + preferenceArray[i].key + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
+    }
+
+    //settings
+    document.cookie = "Player Graph=" + graphSelect.value() + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
+    document.cookie = "Player Color=" + colorSelect.value() + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
+
+    
+    for(var i = 0; i < myPlayer.items.length; i++){
+        document.cookie = myPlayer.items[i].name + "=" + myPlayer.items[i].quant + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
     }
 }
 
@@ -210,3 +261,5 @@ function mouseOnButton(){
     this.style("color","red");
 }
 //#endregion
+
+

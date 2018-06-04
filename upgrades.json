@@ -2,6 +2,7 @@
         {
             "name": "Light Range",
             "current": 1,
+            "description": "Determines the size of visible part of the maze around the player",
             "upgrades":[
                 {  "cost": 0, "value": 0 },
                 {  "cost": 1, "value": 30 },
@@ -27,6 +28,7 @@
         {
             "name": "Base Energy Consumtion",
             "current": 1,
+            "description": "The amound of energy comsumed in the dungeon. The actual amount is depending on your lightRange as well.",
             "upgrades":[
                 {  "cost": 0, "value": 0 },
                 {  "cost": 1, "value": 0.1 },
@@ -53,6 +55,7 @@
         {
             "name": "Move Energy Consumtion",
             "current": 1,
+            "description": "The amount of energy consumed while moving (On top of Base Energy Consumption)",
             "upgrades":[
                 {  "cost": 0, "value": 0 },
                 {  "cost": 1, "value": 0.1 },
@@ -79,13 +82,14 @@
         {
             "name": "Treasure Rooms",
             "current": 1,
+            "description": "There are treasure rooms in the dungeons at random locations. This upgrade determines the number of rooms/dungeon.",
             "upgrades":[
                 {  "cost": 0, "value": 0 },
-                {  "cost": 20, "value": 1 },
-                {  "cost": 50, "value": 2 },
-                {  "cost": 200, "value": 3 },
-                {  "cost": 100, "value": 4 },
-                {  "cost": 5000, "value": 5 },
+                {  "cost": 50, "value": 1 },
+                {  "cost": 200, "value": 2 },
+                {  "cost": 1000, "value": 3 },
+                {  "cost": 5000, "value": 4 },
+                {  "cost": 20000, "value": 5 },
                 {  "cost": 20000, "value": 6 }
             ]
         },
@@ -93,6 +97,7 @@
         {
             "name": "Coin multiplier",
             "current": 1,
+            "description": "The value of a single coin",
             "upgrades":[
                 {  "cost": 0, "value": 0 },
                 {  "cost": 100, "value": 1 },
@@ -106,6 +111,7 @@
         {
             "name": "Max energy",
             "current": 1,
+            "description": "Your maximum Energy",
             "upgrades":[
                 {  "cost": 0, "value": 0 },
                 {  "cost": 1, "value": 100 },
@@ -130,11 +136,28 @@
         {
             "name": "Speed",
             "current": 1,
+            "description": "The speed of your character. Does not affect the energy consumption.",
             "upgrades":[
                 {  "cost": 0, "value": 0 },
                 {  "cost": 500, "value": 2 },
                 {  "cost": 10000, "value": 3 },
                 {  "cost": 20000, "value": 4 }
+            ]
+        },
+        {
+            "name": "Break Energy Consume",
+            "current": 1,
+            "description": "The energy cost of breaking walls.",
+            "upgrades":[
+                {  "cost": 0, "value": 0 },
+                {  "cost": 50, "value": 50 },
+                {  "cost": 100, "value": 40 },
+                {  "cost": 250, "value": 35 },
+                {  "cost": 500, "value": 30 },
+                {  "cost": 1000, "value": 25 },
+                {  "cost": 5000, "value": 20 },
+                {  "cost": 10000, "value": 15 },
+                {  "cost": 10000, "value": 10 }
             ]
         }
     ]

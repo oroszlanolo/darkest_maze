@@ -1,0 +1,37 @@
+{
+    "miniFuelRefill" : {
+        "name" : "Small Energy Refill",
+        "short" : "sE",
+        "description" : "Refill instantly a small amount of fuel.",
+        "price" : 1,
+        "quant" : 0
+    },
+    "mediumFuelRefill" : {
+        "name" : "Medium Energy Refill",
+        "short" : "mE",
+        "description" : "Refill instantly a moderate amount of fuel.",
+        "price" : 2,
+        "quant" : 0
+    },
+    "maxiFuelRefill" : {
+        "name" : "Large Energy Refill",
+        "short" : "lE",
+        "description" : "Refill instantly a large amount of fuel.",
+        "price" : 5,
+        "quant" : 0
+    },
+    "coinBoost_1" : {
+        "name" : "Coin Multyply Boost",
+        "short" : "mult",
+        "description" : "Doubles your Coin Multiply for 10 seconds.",
+        "price" : 10,
+        "quant" : 0
+    },
+    "lightRangeBoost_1" : {
+        "name" : "Small Light Boost",
+        "short" : "sLight",
+        "description" : "Slightly increases your lightRange for 5 seconds.",
+        "price" : 2,
+        "quant" : 0
+    }
+}

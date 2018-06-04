@@ -136,6 +136,7 @@ class MazeGenerator{
         this.coins = [];
         let safety = 200;
         let coinsToMake = this.coinCount;
+        this.generateCoinToRooms();
         while(coinsToMake > 0 && safety > 0){
             safety--;
             let xPos = floor(random(0,mazeCols));
@@ -146,9 +147,17 @@ class MazeGenerator{
                 coinsToMake--;
             }
         }
+    }
+    generateCoinToRooms(){
         for(var i = 0; i < this.rooms.length; i++){
             var r = this.rooms[i];
-            this.coins.push(new Coin(r.x+floor(r.w/2),r.y+floor(r.h/2)));
+            for(var j = r.y; j < r.y + r.h; j++){
+                for(var k = r.x; k < r.x + r.w; k++){
+                    if(0.5 > random()){
+                        this.coins.push(new Coin(k,j));
+                    }
+                }
+            }
         }
     }
 

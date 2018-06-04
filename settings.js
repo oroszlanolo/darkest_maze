@@ -1,8 +1,13 @@
 let keyBindButt;
 let codeBox;
 let codeButt;
+let graphSelect;
+let graphText;
+let colorSelect;
+let colorText;
 
 let settingsGUI = [];
+let settingsText = [];
 
 function createSettings(){
     keyBindButt = createButton("KEYBINDINGS");
@@ -11,6 +16,30 @@ function createSettings(){
     keyBindButt.size(200,70);
     keyBindButt.mouseOver(mouseOnButton);
     keyBindButt.mouseOut(mouseOutButton);
+
+    graphText = new UpgradeTex("Player Texture:", width/2 - 80, 230, 14);
+    settingsText.push(graphText);
+
+	graphSelect = createSelect();
+	graphSelect.option(1);
+	graphSelect.option(2);
+	graphSelect.option(3);
+	graphSelect.option(4);
+    settingsGUI.push(graphSelect);
+
+    colorText = new UpgradeTex("Player Color:", width/2 - 80, 265, 14);
+    settingsText.push(colorText);
+
+    
+	colorSelect = createSelect();
+	colorSelect.option("blue");
+	colorSelect.option("green");
+	colorSelect.option("black");
+    colorSelect.option("purple");
+    colorSelect.changed(CBColor);
+    settingsGUI.push(colorSelect);
+
+
 
     codeButt = createButton("USE CODE");
     settingsGUI.push(codeButt);
@@ -21,14 +50,35 @@ function createSettings(){
 
     codeBox = createInput("code");
     settingsGUI.push(codeBox);
+
+    loadSettings();
 }
 
 
 
 function setSettingsPositions(){
     keyBindButt.position(canvasX + width/2 - keyBindButt.width/2, canvasY + 100);
-    codeBox.position(canvasX + width/2 - 180, canvasY + 300);
-    codeButt.position(canvasX + width/2 + 50, canvasY + 290);
+    graphSelect.position(canvasX + width/2 + 20, canvasY + 215);
+    colorSelect.position(canvasX + width/2 + 20, canvasY + 250);
+    codeBox.position(canvasX + width/2 - 180, canvasY + 520);
+    codeButt.position(canvasX + width/2 + 50, canvasY + 510);
+}
+
+function CBColor(){
+    switch(colorSelect.value()){
+        case "blue":
+        myPlayer.color = color("rgb(0,0,255)");
+        break;
+        case "green":
+        myPlayer.color = color("rgb(0,255,0)");
+        break;
+        case "black":
+        myPlayer.color = color("rgb(0,0,0)");
+        break;
+        case "purple":
+        myPlayer.color = color("rgb(200,0,255)");
+        break;
+    }
 }
 
 function CBKeyBind(){
@@ -45,18 +95,40 @@ function CBUseCode(){
     codeBox.value("code");
 }
 
+function loadSettings(){
+    var loadString = getCookie("Player Graph");
+    if(loadString != ""){
+        graphSelect.value(loadString);
+    }
+    loadString = getCookie("Player Color");
+    if(loadString != ""){
+        colorSelect.value(loadString);
+    }
+    CBColor();
+}
+
 
 //#region KEYBIND
 
 
 let keyPreference = {
+    ZERO : { name : "Use 0", key:48},
+    ONE : { name : "Use 1", key:49},
+    TWO : { name : "Use 2", key:50},
+    TREE : { name : "Use 3", key:51},
+    FOUR : { name : "Use 4", key:52},
+    FIVE : { name : "Use 5", key:53},
+    SIX : { name : "Use 6", key:54},
+    SEVEN : { name : "Use 7", key:55},
+    EIGHT : { name : "Use 8", key:56},
     UP : { name: "Move Up", key:38 },
     DOWN : { name: "Move Down", key:40 },
     LEFT : { name: "Move Left", key:37 },
     RIGHT : { name: "Move Right", key:39 },
     LDOWN : { name: "Light Down", key:109 },
     LUP : { name: "Light Up", key:107 },
-    WALK : { name: "walking (slow)", key:16 }
+    WALK : { name: "walking (slow)", key:16 },
+    BREAK : { name: "Wall Break", key:32 }
 };
 
 preferenceArray = Object.keys(keyPreference).map(function (key) { return keyPreference[key]; });
@@ -69,7 +141,9 @@ let changingKey = false;
 function createKeyBindGUI(){
     for(var i = 0; i < preferenceArray.length; i++){
         var curr = preferenceArray[i];
-        keyBindGUI.push(new UpgradeTex(curr.name, 300, 65 + i*50, 13));
+        var xPos = i < 9 ? 100 : 450;
+        var yPos = i < 9 ? 65 + i*50 : 65 + (i-9)*50;
+        keyBindGUI.push(new UpgradeTex(curr.name, xPos, yPos, 13));
         var tmpButt = createButton(getCharFromCode(curr.key));
         tmpButt.mouseOver(mouseOnButton);
         tmpButt.mouseOut(mouseOutButton);
@@ -105,7 +179,9 @@ function setKeyBindPos(){
 	canvasX = myCanvas.position().x;
     canvasY = myCanvas.position().y;
     for(var i = 0; i < keyBindButts.length; i++){
-        keyBindButts[i].position(canvasX + 400, canvasY + 40 + i*50);
+        var xPos = i < 9 ? 200 : 550;
+        var yPos = i < 9 ? 40 + i*50 : 40 + (i-9)*50;
+        keyBindButts[i].position(canvasX + xPos, canvasY + yPos);
     }
 }
 
