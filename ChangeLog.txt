@@ -1,0 +1,56 @@
+version 1.1.0
+
+- More coins inside treasure rooms
+- updated character graphics
+- changable character pic and color
+- now displayed character direction
+- NEW ABILITY: Break Wall
+- NEW UPGRADES: 
+    - Max energy
+    - Speed
+    - Break Wall Energy Consume
+
+
+version 1.2.0
+
+- Shop is now functioning
+- Useable items
+    - small energy boost
+    - medium energy boost
+    - large energy boost
+    - coin multiply boost
+    - small lightrange boost
+- tooltips for the Shop
+- new keybindings for useable items
+- items display on the user GUI for useable items
+
+version 1.2.1
+
+- lightRange changing now more smooth after the first changing.
+- tooltips
+
+version 1.2.2
+2019.05.24.
+
+- added animated background to main menu
+- added some yellow tint to lighting
+
+Developers:
+
+- refactored things:
+    - new Maze class
+    - maze class contains lot of the logic now.
+    - removed a lot of global variables
+- new DecorMaze class (for pretty background maze)
+
+
+version 1.2.3
+2019.05.
+
+- made maze scalable, and zoomer in 2x.
+- Now not only the player moves, but when the player is
+  moving to the edge of screen, the maze moves compared to the screen instead.
+- new pixelart for player 
+- adjusted player speed and max energy
+- on running out of energy, text appeares, 
+  and you can go back to main menu with wallbreak button

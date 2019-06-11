@@ -1,4 +1,4 @@
-var cols = [10,70,500,650];
+var cols = [10, 70, 500, 650];
 let mMenuButts = [];
 let newDungeonButt;
 let shopButt;
@@ -8,7 +8,7 @@ let settingsButt;
 let mMenuButt;
 let saveButt;
 
-function createGUI(){
+function createGUI() {
     createButts();
     createSettings();
     createKeyBindGUI();
@@ -17,18 +17,18 @@ function createGUI(){
     setPositions();
 }
 
-function drawGUI(){
-	stroke(255,255,255);
-	fill(255,255,255);
-	push();
-	translate(0,mazeH);
-    rect(0,0,mazeW,guiH);
+function drawGUI() {
+    stroke(255, 255, 255);
+    fill(255, 255, 255);
+    push();
+    translate(0, actualH);
+    rect(0, 0, actualW, guiH);
     writePlayerInfo();
-    
-	pop();
+
+    pop();
 }
 
-function writePlayerInfo(){
+function writePlayerInfo() {
     noStroke();
     fill(0);
     textSize(14);
@@ -36,210 +36,218 @@ function writePlayerInfo(){
     text("Energy:", cols[0], 24);
     stroke(0);
     noFill();
-    rect(cols[1],9,350,20);
-    var rectWidth = map(myPlayer.energy, 0, myPlayer.maxEnergy, 0, 350);
-    fill(0,0,255);
-    rect(cols[1],9,rectWidth,20);
+    rect(cols[1], 9, 350, 20);
+    var rectWidth = map(maze.player.energy, 0, maze.player.maxEnergy, 0, 350);
+    fill(0, 0, 255);
+    rect(cols[1], 9, rectWidth, 20);
     fill(0);
     textAlign(CENTER);
-    text(floor(myPlayer.energy),250,25);
+    text(floor(maze.player.energy), 250, 25);
     //coins
     textAlign(LEFT);
     noStroke();
     text("Coins:", cols[0], 50);
-    text(myPlayer.coins, cols[1],50);
+    text(maze.player.coins, cols[1], 50);
 
     //items
-    for(var i = 0; i < 9; i++){
+    for (var i = 0; i < 9; i++) {
         textAlign(CENTER);
-        fill(0,0,255,100);
+        fill(0, 0, 255, 100);
         // fill(0,255,0,150);
-        stroke(0,0,255);
-        rect(5 + i * 70,55,60,50);
+        stroke(0, 0, 255);
+        rect(5 + i * 70, 55, 60, 50);
         //so ugly
-        if(i == 3 && myPlayer.buffs.coinMult.active){
-            fill(0,255,0,150);
+        if (i == 3 && maze.player.buffs.coinMult.active) {
+            fill(0, 255, 0, 150);
             noStroke();
-            var wid = max(0,map(millis(),myPlayer.buffs.coinMult.start,myPlayer.buffs.coinMult.time,60,0));
-            rect(5 + i * 70,55,wid,50);
+            var wid = max(0, map(millis(), maze.player.buffs.coinMult.start, maze.player.buffs.coinMult.time, 60, 0));
+            rect(5 + i * 70, 55, wid, 50);
         }
-        if(i == 4 && myPlayer.buffs.lightRange.active){
-            fill(0,255,0,150);
+        if (i == 4 && maze.player.buffs.lightRange.active) {
+            fill(0, 255, 0, 150);
             noStroke();
-            var wid = max(0,map(millis(),myPlayer.buffs.lightRange.start,myPlayer.buffs.lightRange.time,60,0));
-            rect(5 + i * 70,55,wid,50);
+            var wid = max(0, map(millis(), maze.player.buffs.lightRange.start, maze.player.buffs.lightRange.time, 60, 0));
+            rect(5 + i * 70, 55, wid, 50);
         }
         noStroke();
-        fill(0,0,255);
+        fill(0, 0, 255);
         textSize(18);
-        text(getCharFromCode(preferenceArray[i].key),35+i*70,75);
+        text(getCharFromCode(preferenceArray[i].key), 35 + i * 70, 75);
         fill(0);
         textSize(14);
-        if(i < myPlayer.items.length){
-            var curr = myPlayer.items[i];
-            text(curr.short + " " + curr.quant, 35 + i*70, 95);
+        if (i < maze.player.items.length) {
+            var curr = maze.player.items[i];
+            text(curr.short + " " + curr.quant, 35 + i * 70, 95);
         }
     }
 }
 
-function createButts(){
+function createButts() {
     createMMenu();
 
     mMenuButt = createButton("MAIN MENU");
     mMenuButt.mouseClicked(CBMMenu);
-    mMenuButt.size(100,30);
+    mMenuButt.size(100, 30);
     mMenuButt.mouseOver(mouseOnButton);
     mMenuButt.mouseOut(mouseOutButton);
 
     saveButt = createButton("SAVE");
     saveButt.mouseClicked(CBSave);
-    saveButt.size(100,30);
+    saveButt.size(100, 30);
     saveButt.mouseOver(mouseOnButton);
     saveButt.mouseOut(mouseOutButton);
 }
 
-function createMMenu(){
+function createMMenu() {
     newDungeonButt = createButton("NEW MAZE");
     mMenuButts.push(newDungeonButt);
     newDungeonButt.mouseClicked(CBNewDungeon);
-    newDungeonButt.size(300,100);
+    newDungeonButt.size(300, 100);
     newDungeonButt.mouseOver(mouseOnButton);
     newDungeonButt.mouseOut(mouseOutButton);
 
     shopButt = createButton("SHOP");
     mMenuButts.push(shopButt);
     shopButt.mouseClicked(CBShop);
-    shopButt.size(300,100);
+    shopButt.size(300, 100);
     shopButt.mouseOver(mouseOnButton);
     shopButt.mouseOut(mouseOutButton);
-    
+
     upgradeButt = createButton("UPGRADE");
     mMenuButts.push(upgradeButt);
     upgradeButt.mouseClicked(CBUpgrade);
-    upgradeButt.size(300,100);
+    upgradeButt.size(300, 100);
     upgradeButt.mouseOver(mouseOnButton);
-    upgradeButt.mouseOut(mouseOutButton); 
+    upgradeButt.mouseOut(mouseOutButton);
 
     settingsButt = createButton("SETTINGS");
     mMenuButts.push(settingsButt);
     settingsButt.mouseClicked(CBSettings);
-    settingsButt.size(150,50);
+    settingsButt.size(150, 50);
     settingsButt.mouseOver(mouseOnButton);
     settingsButt.mouseOut(mouseOutButton);
 }
 
 
 
-function windowResized(){
+function windowResized() {
     setPositions();
 }
 
-function setPositions(){
-	canvasX = myCanvas.position().x;
+function setPositions() {
+    canvasX = myCanvas.position().x;
     canvasY = myCanvas.position().y;
-    newDungeonButt.position(canvasX + width/2 - newDungeonButt.width/2, canvasY + 100);
-    shopButt.position(canvasX + width/2 - shopButt.width/2, canvasY + 220);
-    upgradeButt.position(canvasX + width/2 - upgradeButt.width/2, canvasY + 340);
-    settingsButt.position(canvasX + 5, canvasY + mazeH - settingsButt.height - 5);
-    mMenuButt.position(canvasX + cols[3], canvasY + mazeH + 10);
-    saveButt.position(canvasX + cols[3], canvasY + mazeH + 50);
+    newDungeonButt.position(canvasX + width / 2 - newDungeonButt.width / 2, canvasY + 100);
+    shopButt.position(canvasX + width / 2 - shopButt.width / 2, canvasY + 220);
+    upgradeButt.position(canvasX + width / 2 - upgradeButt.width / 2, canvasY + 340);
+    settingsButt.position(canvasX + 5, canvasY + actualH - settingsButt.height - 5);
+    mMenuButt.position(canvasX + cols[3], canvasY + actualH + 10);
+    saveButt.position(canvasX + cols[3], canvasY + actualH + 50);
     setUpgradePositions();
     setSettingsPositions();
     setKeyBindPos();
     setShopPos();
 }
 
+function drawMainMenu() {
+    background(255);
+    decorMaze.updatePos();
+    decorMaze.draw();
+    background(0, 0, 0, 100);
+}
+
 
 
 //#region Callbacks
-function CBMMenu(){
+function CBMMenu() {
     changeGState(gameSt.MMenu);
     setChangingFalse();
 }
 
-function CBNewDungeon(){
+function CBNewDungeon() {
     changeGState(gameSt.Dungeon);
     newGame();
 }
 
-function CBShop(){
+function CBShop() {
     changeGState(gameSt.Shop);
 
 }
 
-function CBUpgrade(){
+function CBUpgrade() {
     changeGState(gameSt.Upgrade);
 
 }
 
-function CBSettings(){
+function CBSettings() {
     changeGState(gameSt.Settings);
 
 }
 
-function changeGState(gst){
-    switch(gst){
+function changeGState(gst) {
+    switch (gst) {
         case gameSt.MMenu:
-        showButts(mMenuButts);
-        hideButts(upgradeButts);
-        hideButts(settingsGUI);
-        hideButts(keyBindButts);
-        hideButts(shopButts);
-        break;
+            showButts(mMenuButts);
+            hideButts(upgradeButts);
+            hideButts(settingsGUI);
+            hideButts(keyBindButts);
+            hideButts(shopButts);
+            break;
         case gameSt.Shop:
-        hideButts(mMenuButts);
-        hideButts(upgradeButts);
-        hideButts(settingsGUI);
-        showButts(shopButts);
-        break;
+            hideButts(mMenuButts);
+            hideButts(upgradeButts);
+            hideButts(settingsGUI);
+            showButts(shopButts);
+            break;
         case gameSt.Upgrade:
-        hideButts(mMenuButts);
-        showButts(upgradeButts);
-        hideButts(settingsGUI);
-        hideButts(shopButts);
-        break;
+            hideButts(mMenuButts);
+            showButts(upgradeButts);
+            hideButts(settingsGUI);
+            hideButts(shopButts);
+            break;
         case gameSt.Dungeon:
-        hideButts(mMenuButts);
-        hideButts(upgradeButts);
-        hideButts(settingsGUI);
-        hideButts(shopButts);
-        break;
+            hideButts(mMenuButts);
+            hideButts(upgradeButts);
+            hideButts(settingsGUI);
+            hideButts(shopButts);
+            break;
         case gameSt.Settings:
-        hideButts(mMenuButts);
-        hideButts(upgradeButts);
-        hideButts(keyBindButts);
-        showButts(settingsGUI);
-        hideButts(shopButts);
-        break;
+            hideButts(mMenuButts);
+            hideButts(upgradeButts);
+            hideButts(keyBindButts);
+            showButts(settingsGUI);
+            hideButts(shopButts);
+            break;
         case gameSt.KeyBind:
-        hideButts(settingsGUI);
-        showButts(keyBindButts);
-        hideButts(shopButts);
+            hideButts(settingsGUI);
+            showButts(keyBindButts);
+            hideButts(shopButts);
     }
     gameState = gst;
 }
 
-function hideButts(buttArr){
-    for(var b of buttArr){
+function hideButts(buttArr) {
+    for (var b of buttArr) {
         b.hide();
     }
 }
-function showButts(buttArr){
-    for(var b of buttArr){
+
+function showButts(buttArr) {
+    for (var b of buttArr) {
         b.show();
     }
 }
 
-function CBSave(){
+function CBSave() {
     //upgrades
-    for(var i = 0; i < upgradeDat.length; i++){
+    for (var i = 0; i < upgradeDat.length; i++) {
         document.cookie = i + "=" + upgradeDat[i].current + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
     }
     //coins
-    document.cookie = "coin=" + myPlayer.coins + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
-    
+    document.cookie = "coin=" + maze.player.coins + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
+
     //keyBinds
-    for(var i = 0; i < preferenceArray.length; i++){
+    for (var i = 0; i < preferenceArray.length; i++) {
         document.cookie = preferenceArray[i].name + "=" + preferenceArray[i].key + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
     }
 
@@ -247,19 +255,18 @@ function CBSave(){
     document.cookie = "Player Graph=" + graphSelect.value() + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
     document.cookie = "Player Color=" + colorSelect.value() + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
 
-    
-    for(var i = 0; i < myPlayer.items.length; i++){
-        document.cookie = myPlayer.items[i].name + "=" + myPlayer.items[i].quant + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
+
+    for (var i = 0; i < maze.player.items.length; i++) {
+        document.cookie = maze.player.items[i].name + "=" + maze.player.items[i].quant + "; expires=Fri, 1 Jan 2121 12:00:00 UTC";
     }
 }
 
 
-function mouseOutButton(){
-    this.style("color","black");
+function mouseOutButton() {
+    this.style("color", "black");
 }
-function mouseOnButton(){
-    this.style("color","red");
+
+function mouseOnButton() {
+    this.style("color", "red");
 }
 //#endregion
-
-
