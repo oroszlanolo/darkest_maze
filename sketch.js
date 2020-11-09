@@ -59,7 +59,7 @@ function preload() {
 
 function setup() {
 	// frameRate(30);
-	maze = new Maze(MAZECOLS, MAZEROWS, WALLW, SPACEW, PLAYERW, SIMPLICTY, 1);
+	maze = new Maze(MAZECOLS, MAZEROWS, WALLW, SPACEW, PLAYERW, SIMPLICTY, 2);
 	myCanvas = createCanvas(actualW, actualH + guiH);
 	myCanvas.parent("canvasD");
 	canvasX = myCanvas.position().x;
